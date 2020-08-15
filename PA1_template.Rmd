@@ -163,7 +163,7 @@ df.perDay %>%
   
 ```
 
-The median has not changed that much from the base value without any imputed values. The mean has shifted towards lower estimates.
+The median has not changed that much from the base value without any imputed values. The mean has shifted towards lower estimates. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r weekday}
@@ -184,6 +184,7 @@ df.Weekday %>%
     scale_color_manual(values=c("#D95F02")) +
     theme(legend.position = "none") +
     facet_wrap(.~Weekend)
+
   
 ```
 
