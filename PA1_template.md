@@ -204,6 +204,7 @@ df.perDay %>%
 
 ![](PA1_template_files/figure-html/Steps_distribution_Imputed-1.png)<!-- -->
 
+
 The median has not changed that much from the base value without any imputed values. The mean has shifted towards lower estimates. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
