@@ -7,7 +7,8 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 options(tidyverse.quiet = T)
 
 library(ggplot2)
@@ -24,7 +25,18 @@ theme_set(
 
 f <- unz("activity.zip", "activity.csv")
 df <- as_tibble(readr::read_csv(f))
+```
 
+```
+## Parsed with column specification:
+## cols(
+##   steps = col_double(),
+##   date = col_date(format = ""),
+##   interval = col_double()
+## )
+```
+
+```r
 df$Weekday <- lubridate::wday(df$date, label=T, abbr=F)
 df$Weekend <- factor(df$Weekday %in% c("Saturday", "Sunday"),
                      c(T,F),
@@ -33,10 +45,21 @@ df$Weekend <- factor(df$Weekday %in% c("Saturday", "Sunday"),
 glimpse(df)
 ```
 
+```
+## Rows: 17,568
+## Columns: 5
+## $ steps    <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ date     <date> 2012-10-01, 2012-10-01, 2012-10-01, 2012-10-01, 2012-10-01,…
+## $ interval <dbl> 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 100, 105, 110,…
+## $ Weekday  <ord> Monday, Monday, Monday, Monday, Monday, Monday, Monday, Mond…
+## $ Weekend  <fct> Weekday, Weekday, Weekday, Weekday, Weekday, Weekday, Weekda…
+```
+
 
 
 ## What is mean total number of steps taken per day?
-```{r Steps_distribution}
+
+```r
 df.perDay <- df %>% 
               filter(!is.na(steps)) %>% 
               group_by(date) %>% 
@@ -65,13 +88,15 @@ df.perDay %>%
     
    
     theme(legend.position = "none")
-  
 ```
+
+![](PA1_template_files/figure-html/Steps_distribution-1.png)<!-- -->
 
 
 
 ## What is the average daily activity pattern?
-```{r Steps_dayly}
+
+```r
 df.MeanInterval <- df %>% 
                     filter(!is.na(steps)) %>% 
                     group_by(interval) %>%
@@ -95,24 +120,32 @@ df.MeanInterval %>%
     scale_fill_manual(values=c("grey35","#D95F02")) +
     scale_color_manual(values=c("#D95F02")) +
     theme(legend.position = "none") 
-    
-  
 ```
+
+![](PA1_template_files/figure-html/Steps_dayly-1.png)<!-- -->
 
 
 ## Imputing missing values
 
 ### Number of Missing Rows
 
-```{r na_values}
+
+```r
 knitr::kable(df %>% 
  filter(is.na(steps)) %>% 
  nrow() %>% 
  tibble(`Missing Rows` = .))
 ```
 
+
+
+| Missing Rows|
+|------------:|
+|         2304|
+
 ### Imputation
-```{r impute_missing}
+
+```r
 df.Imputed <- df %>% 
                 filter(!is.na(steps)) %>% 
                 group_by(interval, Weekend) %>% 
@@ -130,8 +163,15 @@ knitr::kable(df.Imputed %>%
  tibble(`Missing Rows` = .))
 ```
 
+
+
+| Missing Rows|
+|------------:|
+|            0|
+
 ### Plot new Distribution
-```{r Steps_distribution_Imputed}
+
+```r
 df.perDay <- df.Imputed %>% 
               filter(!is.na(steps)) %>% 
               group_by(date) %>% 
@@ -160,13 +200,15 @@ df.perDay %>%
     
    
     theme(legend.position = "none")
-  
 ```
+
+![](PA1_template_files/figure-html/Steps_distribution_Imputed-1.png)<!-- -->
 
 The median has not changed that much from the base value without any imputed values. The mean has shifted towards lower estimates.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r weekday}
+
+```r
 df.Weekday <- df.Imputed %>% 
                 group_by(interval, Weekend) %>% 
                 summarize(steps = mean(steps)) 
@@ -184,7 +226,8 @@ df.Weekday %>%
     scale_color_manual(values=c("#D95F02")) +
     theme(legend.position = "none") +
     facet_wrap(.~Weekend)
-  
 ```
+
+![](PA1_template_files/figure-html/weekday-1.png)<!-- -->
 
 The distribution of steps on weekends and weekdays is different. Though on both Weekends and Weekdays we see a peak of steps at around the interval 800, the mean number of steps on weekdays decreases dramtically after this peak throughout the intervals until another peak occurs around the interval 1 800. Whereas on weekends we see a nearly normal distributed mean number of steps with more steps taken in each interval compared to weekdays.
